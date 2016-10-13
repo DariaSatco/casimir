@@ -1,0 +1,8 @@
+*.o
+*.mod
+*.exe
+.cproject
+.project
+*.eps
+Debug/*
+
