@@ -6,3 +6,4 @@
 *.eps
 Debug/*
 
+/Debug/
