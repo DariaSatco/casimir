@@ -1,10 +1,8 @@
-program casimir
+program casimir_silicon
 
 use dopcasimir
-use spline
 use silicon
 use gold
-!use quadpack
 
 implicit none
 
@@ -53,7 +51,11 @@ real(8):: a(2), b(2)
 
 !-----------------------------------------------------------------------
 open(unit=11, file='casimirsilicon.txt', status='replace')
-!casimirsilicon.txt, casimirgold.txt - files with computational results
+!casimirsilicon.txt - file with computational results
+
+!----------------------------------------------------------------------
+open(unit=12, file='eta_to_plot_sil.txt', status='replace')
+!eta_to_plot_sil.txt - file with ratio eta=energy/casimir
 
 !-----------------------------------------------------------------------
 !code for calulation of casimir free energy
@@ -201,17 +203,22 @@ allocate(epsteorSil(k))
             ssum01=ssum01+res
 
 !****************
-
+!Kramers-Kronig
 fenergy(j)=1.602e-19*kb*T/(2*pi*dist**2)*(0.5*ssum0+ssum(j))
-
+!Article
 fenergy1(j)=1.602e-19*kb*T/(2*pi*dist**2)*(0.5*ssum01+ssum1(j))
-
+!T=0
 rest0=1.602e-19*h*rest0/(2*pi)**2
-
+!Casimir
 ecasimir(j)=1.602e-19*(pi)**2*h*c/(720*dist**3)
 
-write(11,*) dist*1.0e7, abs((fenergy(j))*1.0e9), abs((fenergy1(j))*1.0e9), &
+100 format(f10.1, 6(f10.3))
+
+write(11,100) dist*1.0e6, abs((fenergy(j))*1.0e9), abs((fenergy1(j))*1.0e9), &
 abs(rest0)*1.0e9, ecasimir(j)*1.0e9
+
+write(12,100) dist*1.0e6, abs(fenergy(j))/ecasimir(j), abs(fenergy1(j))/ecasimir(j), &
+abs(rest0)/ecasimir(j)
 !*********
 
 deallocate(epsSil)
@@ -228,9 +235,12 @@ deallocate(ssum)
 deallocate(fenergy)
 deallocate(ssum1)
 deallocate(fenergy1)
+deallocate(ecasimir)
 
-close(11)
+
 close(10)
+close(11)
+close(12)
 
 end program
 
